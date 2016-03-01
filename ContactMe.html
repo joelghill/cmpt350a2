@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Joel Hill</title>
+	<meta charset=“UTF-8”>
+    <link rel="stylesheet" type="text/css" href="stylesheets/css/stylesheet.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            //$("#navpanel").hide();
+            $("#navpanel").load("navpanel.html", function(){
+                $("#contact_tab").toggleClass("active")
+            });
+            
+            $("form").submit(function(){
+                var name  = (document.getElementById("formname")).checkValidity();
+                var email = (document.getElementById("email")).checkValidity();
+                var date  = (document.getElementById("date")).checkValidity();
+                var phone = (document.getElementById("tel")).checkValidity();
+                var message = (document.getElementById("message")).checkValidity();
+                if(name && email && date && phone && message){
+                    alert("Your information is correct");   
+                }else{
+                    alert("Complete your information (and check formatting...)");
+                }
+           });
+        });
+    </script>          
+</head>
+<body>
+    <nav id="navpanel"></nav> 
+   <article>
+       <section>
+           <h1>Contact Me</h1>
+           <form id="message_form">
+               <table>
+                   <tr>
+                       <td>Name:</td>
+                       <td><input id="formname" type="text" name="name" required></td>
+                       <td>Email:</td>
+                       <td><input id = "email" type="email" name="email" required></td>
+                   </tr>
+                   <tr>
+                       <td>Date:</td>
+                       <td><input id="date" type="text" name="date" required></td>
+                       <td>Phone:</td>
+                       <td><input id="tel" type="tel" name="telephone" required></td>
+                   </tr>
+               </table>
+                <textarea id="message" name="message" form="message_form" style="width:50%; height:150px;" required></textarea><br>
+                <input type="submit"><br>
+            </form>
+       </section>
+   </article>
+</body>
+</html>

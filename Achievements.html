@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Achievments</title>
+	<meta charset=“UTF-8”>
+    <link rel="stylesheet" type="text/css" href="stylesheets/css/stylesheet.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script> 
+    <script>
+       	function deleteClick(index){
+   			var number = parseInt(index);
+   			var clickBtnValue = 'delete'
+       		data =  {'action': clickBtnValue, 'id': number};
+        	$.post('./ach_controller.php', data, function (response) {
+            		//console.log("Response: "+response);
+            		location.reload();
+            });
+   		}
+   		function createAchButtons(index){
+   			var deleteString = "<button id=delete"+index+" value="+i.toString+
+   				" onClick=\"deleteClick("+index+")\">Delete</button>"
+   			return deleteString;
+   		}
+   		
+    	function getAchievements(){
+   			var clickBtnValue = 'achievements'
+        	var ajaxurl = './ach_controller.php'
+       		data =  {'action': clickBtnValue};
+        	$.post(ajaxurl, data, function (response) {
+            		//console.log("Response: "+response);
+            		json = JSON.parse(response)
+            		for(i = 0; i < json.length; i++){
+            			// Find a <table> element with id="myTable":
+						var table = document.getElementById("achievements_table");
+						// Create an empty <tr> element and add it to the 1st position of the table:
+						var row = table.insertRow(1);
+						var id = row.insertCell(0);
+						var name = row.insertCell(1);
+						var points = row.insertCell(2);
+						var shortD = row.insertCell(3);
+						var buttons = row.insertCell(4);
+						// Add some text to the new cells:
+						id.innerHTML = json[i].achievementID;
+						name.innerHTML = json[i].name;
+						shortD.innerHTML = json[i].short_desc;
+						points.innerHTML = json[i].points;
+						buttons.innerHTML = createAchButtons(json[i].achievementID);
+						//assignEvents(i);
+            		}
+            });
+   		}
+   		
+   		function submitForm(){
+   			var form_id = document.getElementById('form_id');
+   			var clickBtnValue;
+   			if(!form_id.checkValidity()){
+   				clickBtnValue = 'insert'
+   			}else{
+   				console.log("Editing: " + form_id.value)
+   				clickBtnValue = 'edit'
+   			}
+        	var ajaxurl = './ach_Controller.php'
+        	var name = document.getElementById('ach_name').value;
+        	var shortD = document.getElementById('short_desc').value;
+        	var longD = document.getElementById('long_desc').value;
+        	var points = document.getElementById('points').value;
+        	var cat = document.getElementById('category').value;
+       		data =  {'action': clickBtnValue, 'name': name, 'short':shortD, 'points':points,'category':cat, 
+       			'long': longD, 'id': form_id.value};
+        	$.post(ajaxurl, data, function (response) {
+            		location.reload();
+            });
+   		}
+        $(document).ready(function(event){
+            //$("#navpanel").hide();
+            getAchievements();
+            $("#navpanel").load("navpanel.html", function(){
+                $("#achieve_tab").toggleClass("active")
+            });
+            
+            $("form").submit(function(event){
+            	event.preventDefault();
+                var name  = (document.getElementById("ach_name")).checkValidity();
+                var points = (document.getElementById("points")).checkValidity();
+                var category  = (document.getElementById("category")).checkValidity();
+                var short_desc = (document.getElementById("short_desc")).checkValidity();
+                var long_desc = (document.getElementById("long_desc")).checkValidity();
+                if(name && points && category && short_desc && long_desc){
+                    //alert("Your information has been submitted");
+                    submitForm();   
+                }else{
+                    alert("Please fill out all forms.");
+                }
+           });
+        });
+    </script>        
+</head>
+<body>
+    <nav id="navpanel"></nav>
+   <article>
+		<div style= "overflow:auto">
+		   <section>
+			   <h1>Achievements</h1>
+			   <div style= "margin-left:5%">
+					<table id="achievements_table" style="width:50%">
+						<tr>
+							<td><b>ID</b></td>
+							<td><b>Name</b></td>
+							<td><b>Points</b></td>
+							<td><b>Short Description</b></td>
+						</tr>
+					</table>
+				</div>
+		   </section>
+		   <section>
+			   <h3>Add/Edit Achievement</h3>
+			   <form id="achievement_form">
+					<p>*Specify an existing ID to edit current entry</p>
+				   <table>
+					   <tr>
+							<td>Id*:</td>
+						   <td><input id="form_id" type="number" name="formid" required></td>
+						   <td>Name:</td>
+						   <td><input id="ach_name" type="text" name="name" required></td>
+						   <td>Points:</td>
+						   <td><input id = "points" type="number" name="points" required></td>
+							<td>Category:</td>
+						   <td><input id = "category" type="text" name="points" required></td>
+					   </tr>
+				   </table>
+				   <p>Short Description</p>
+					<textarea id="short_desc" name="short_desc" form="achievement_form" maxlength="255" style="width:50%; height:50px;" type="text" required></textarea><br>
+					<p>Long Description</p>
+					<textarea id="long_desc" name="message" form="achievement_form" maxlength="400" style="width:50%; height:150px; type="text" required></textarea><br>
+					<input type="submit"><br>
+				</form>
+		   </section>
+		</div>
+   </article>
+</body>
+</html>
